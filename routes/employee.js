@@ -11,7 +11,7 @@ const generateEmployeeId = async () => {
   let isUnique = false;
   while (!isUnique) {
     const randomNum = Math.floor(1000 + Math.random() * 9000); // 4-digit number
-    employeeId = `EMP${randomNum}`;
+    employeeId = `TRD${randomNum}`;
     const existing = await Employee.findOne({ employeeId });
     if (!existing) isUnique = true;
   }
