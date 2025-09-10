@@ -124,10 +124,22 @@ router.get('/overview', auth, async (req, res) => {
         employeeId: att.employee?.employeeId || 'N/A',
         name: att.employee?.name || 'N/A',
         punchIn: att.punchIn
-          ? new Date(att.punchIn).toLocaleTimeString('en-IN')
+          ? new Date(att.punchIn).toLocaleTimeString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+            })
           : '-',
         punchOut: att.punchOut
-          ? new Date(att.punchOut).toLocaleTimeString('en-IN')
+          ? new Date(att.punchOut).toLocaleTimeString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+            })
           : '-',
         hoursWorked,
       });
@@ -193,8 +205,24 @@ router.get('/download', auth, async (req, res) => {
         employeeId: att.employee?.employeeId || 'N/A',
         name: att.employee?.name || 'N/A',
         date: new Date(att.date).toLocaleDateString('en-IN'),
-        punchIn: att.punchIn ? new Date(att.punchIn).toLocaleTimeString('en-IN') : '-',
-        punchOut: att.punchOut ? new Date(att.punchOut).toLocaleTimeString('en-IN') : '-',
+        punchIn: att.punchIn
+          ? new Date(att.punchIn).toLocaleTimeString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+            })
+          : '-',
+        punchOut: att.punchOut
+          ? new Date(att.punchOut).toLocaleTimeString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+            })
+          : '-',
         hoursWorked,
         hourlyRate,
         totalSalary,
@@ -262,8 +290,24 @@ router.get('/download/my-attendance', auth, async (req, res) => {
         employeeId: att.employee?.employeeId || 'N/A',
         name: att.employee?.name || 'N/A',
         date: new Date(att.date).toLocaleDateString('en-IN'),
-        punchIn: att.punchIn ? new Date(att.punchIn).toLocaleTimeString('en-IN') : '-',
-        punchOut: att.punchOut ? new Date(att.punchOut).toLocaleTimeString('en-IN') : '-',
+        punchIn: att.punchIn
+          ? new Date(att.punchIn).toLocaleTimeString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+            })
+          : '-',
+        punchOut: att.punchOut
+          ? new Date(att.punchOut).toLocaleTimeString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+            })
+          : '-',
         hoursWorked,
         hourlyRate,
         totalSalary,
