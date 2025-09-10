@@ -8,7 +8,7 @@ const PDFDocument = require('pdfkit');
 const { sendEmail } = require('../utils/sendEmail');
 
 /**
- * PDF Generator Function (Template Design)
+ * PDF Generator Function (Professional Single Page Template)
  */
 const generateSalarySlipPDF = (salarySlip, employee) => {
   return new Promise((resolve) => {
@@ -16,6 +16,9 @@ const generateSalarySlipPDF = (salarySlip, employee) => {
     let buffers = [];
     doc.on('data', buffers.push.bind(buffers));
     doc.on('end', () => resolve(Buffer.concat(buffers)));
+
+    const year = new Date().getFullYear();
+    const colX = [40, 200, 280, 360, 450]; // table columns
 
     // === Company Header ===
     doc.fillColor('#1e3a8a').fontSize(22).font('Helvetica-Bold').text('Fintradify', 40, 40);
@@ -25,8 +28,8 @@ const generateSalarySlipPDF = (salarySlip, employee) => {
 
     doc.fontSize(22).fillColor('#1e3a8a').text('PAYSLIP', 450, 40);
 
-    // === Employee Info Section ===
-    doc.fillColor('#ffffff').rect(40, 110, 200, 20).fill('#3b82f6');
+    // === Employee Info Section (Left) ===
+    doc.fillColor('#ffffff').rect(40, 110, 220, 20).fill('#3b82f6');
     doc.fillColor('#fff').fontSize(11).text('EMPLOYEE INFORMATION', 45, 115);
 
     doc.fillColor('#111827').font('Helvetica').fontSize(10);
@@ -35,7 +38,7 @@ const generateSalarySlipPDF = (salarySlip, employee) => {
     doc.text(`Position: ${employee.position}`, 40, 170);
     doc.text(`Email: ${employee.email}`, 40, 185);
 
-    // === Pay Info (Right Side) ===
+    // === Pay Info Section (Right) ===
     const rightX = 300;
     doc.fillColor('#1e3a8a').font('Helvetica-Bold').fontSize(11);
     doc.text('PAY DATE', rightX, 110);
@@ -61,8 +64,6 @@ const generateSalarySlipPDF = (salarySlip, employee) => {
     doc.fillColor('#444').font('Helvetica-Bold').fontSize(11).text('EARNINGS', 40, tableTop);
     tableTop += 20;
 
-    const colX = [40, 200, 280, 360, 450];
-
     // Headers
     doc.rect(40, tableTop, 515, 20).fill('#e5e7eb');
     doc.fillColor('#111827').fontSize(10);
@@ -73,7 +74,7 @@ const generateSalarySlipPDF = (salarySlip, employee) => {
     doc.text('YTD', colX[4] + 5, tableTop + 5);
     tableTop += 20;
 
-    // Row: Basic Pay
+    // === Row: Basic Pay ===
     doc.rect(40, tableTop, 515, 20).fill('#fff').stroke('#d1d5db');
     doc.fillColor('#111827').font('Helvetica').fontSize(10);
     doc.text('Basic Pay', colX[0] + 5, tableTop + 5);
@@ -96,9 +97,8 @@ const generateSalarySlipPDF = (salarySlip, employee) => {
     doc.text(`INR ${salarySlip.amount}`, colX[3] + 5, tableTop + 8);
 
     // === Footer ===
-    const year = new Date().getFullYear();
     doc.fontSize(9).fillColor('#6b7280').text(
-      `If you have any questions, please contact HR | © ${year} Fintradify`,
+      `If you have any questions about this payslip, please contact HR | © ${year} Fintradify`,
       40, 800, { align: 'center' }
     );
 
