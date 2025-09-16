@@ -10,7 +10,7 @@ router.post('/login', async (req, res) => {
   const { email, password, otp } = req.body;
   try {
     const employee = await Employee.findOne({ email });
-    if (!employee) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!employee) return res.status(400).json({ message: 'Employee ID Not Found ' });
 
     if (employee.role === 'admin') {
       if (!password) return res.status(400).json({ message: 'Password required for admin' });
