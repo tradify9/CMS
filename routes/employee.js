@@ -69,12 +69,12 @@ router.post('/', auth, async (req, res) => {
         employee: employee._id,
         month: currentMonth,
         amount: parseFloat(salary),
-        hoursWorked: 160, // Default hours, can be adjusted later
+        hoursWorked: 160,
       });
       await salarySlip.save();
     }
 
-    // ✅ Professional Email Template
+    // ✅ Professional Email Template with Portal Link
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
         <h2 style="color: #007bff; text-align: center;">🎉 Welcome to Fintradify</h2>
@@ -94,7 +94,12 @@ router.post('/', auth, async (req, res) => {
             <td style="padding: 8px; border: 1px solid #ddd;">${password}</td>
           </tr>
         </table>
-        <p style="margin-top: 20px;">Please use these credentials to log in to the <strong>Fintradify Employee Portal</strong>. For security reasons, make sure to change your password after first login.</p>
+        <p style="margin-top: 20px;">Please use these credentials to log in to the <strong>Fintradify Employee Portal</strong>.</p>
+        <p style="text-align: center; margin: 20px 0;">
+          <a href="https://careersachiever.com/" style="background-color:#007bff; color:#fff; padding: 10px 20px; border-radius: 5px; text-decoration:none; font-weight:bold;">
+            🔗 Go to Employee Portal
+          </a>
+        </p>
         <p style="margin-top: 20px; font-size: 14px; color: #666; text-align: center;">
           🔒 This is a system-generated email. Do not share your credentials with anyone.
         </p>
@@ -125,9 +130,8 @@ router.put('/:id', auth, async (req, res) => {
 
     await employee.save();
 
-    // Update or create salary slip if salary is provided
     if (salary !== undefined && !isNaN(salary) && salary >= 0) {
-      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+      const currentMonth = new Date().toISOString().slice(0, 7);
       let salarySlip = await SalarySlip.findOne({
         employee: employee._id,
         month: currentMonth,
