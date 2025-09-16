@@ -74,7 +74,35 @@ router.post('/', auth, async (req, res) => {
       await salarySlip.save();
     }
 
-    await sendEmail(email, 'Fintradify Account Created', `Your account has been created.\nEmployee ID: ${employeeId}\nEmail: ${email}\nPassword: ${password}`);
+    // ✅ Professional Email Template
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+        <h2 style="color: #007bff; text-align: center;">🎉 Welcome to Fintradify</h2>
+        <p>Dear <strong>${name}</strong>,</p>
+        <p>Your employee account has been successfully created.</p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+          <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Employee ID</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${employeeId}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Email</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${email}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Password</strong></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${password}</td>
+          </tr>
+        </table>
+        <p style="margin-top: 20px;">Please use these credentials to log in to the <strong>Fintradify Employee Portal</strong>. For security reasons, make sure to change your password after first login.</p>
+        <p style="margin-top: 20px; font-size: 14px; color: #666; text-align: center;">
+          🔒 This is a system-generated email. Do not share your credentials with anyone.
+        </p>
+      </div>
+    `;
+
+    await sendEmail(email, '🎉 Fintradify Account Created', htmlContent);
+
     res.json({ ...employee._doc, salary: salary || 'N/A' });
   } catch (err) {
     console.error('Add employee error:', err);
@@ -105,12 +133,10 @@ router.put('/:id', auth, async (req, res) => {
         month: currentMonth,
       });
       if (salarySlip) {
-        // Update existing salary slip
         salarySlip.amount = parseFloat(salary);
-        salarySlip.hoursWorked = 160; // Reset to default, can be adjusted later
+        salarySlip.hoursWorked = 160;
         await salarySlip.save();
       } else if (salary > 0) {
-        // Create new salary slip
         salarySlip = new SalarySlip({
           employee: employee._id,
           month: currentMonth,
@@ -121,8 +147,7 @@ router.put('/:id', auth, async (req, res) => {
       }
     }
 
-    const latestSalary = await SalarySlip.findOne({ employee: employee._id })
-      .sort({ month: -1 });
+    const latestSalary = await SalarySlip.findOne({ employee: employee._id }).sort({ month: -1 });
     res.json({ ...employee._doc, salary: latestSalary ? latestSalary.amount : 'N/A' });
   } catch (err) {
     console.error('Update employee error:', err);
@@ -148,8 +173,7 @@ router.get('/profile', auth, async (req, res) => {
   try {
     const employee = await Employee.findById(req.user.id);
     if (!employee) return res.status(404).json({ message: 'Employee not found' });
-    const latestSalary = await SalarySlip.findOne({ employee: employee._id })
-      .sort({ month: -1 });
+    const latestSalary = await SalarySlip.findOne({ employee: employee._id }).sort({ month: -1 });
     res.json({ ...employee._doc, salary: latestSalary ? latestSalary.amount : 'N/A' });
   } catch (err) {
     console.error('Fetch profile error:', err);
